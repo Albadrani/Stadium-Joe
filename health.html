@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام المراقبة الصحية الذكي - ستاديوم جو</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --safe: #4CAF50;
+            --warning: #FFC107;
+            --danger: #F44336;
+            --primary: #2196F3;
+            --bg: #0F172A;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            color: white;
+            min-height: 100vh;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            padding: 2rem;
+            height: 100vh;
+        }
+
+        .main-panel {
+            display: grid;
+            grid-template-rows: auto 1fr;
+            gap: 1.5rem;
+        }
+
+        .thermal-view {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            background: black;
+            box-shadow: 0 0 30px rgba(255,255,255,0.1);
+        }
+
+        #thermalCamera {
+            width: 100%;
+            height: 600px;
+            object-fit: cover;
+        }
+
+        .overlay-alert {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(244,67,54,0.9);
+            padding: 1rem;
+            border-radius: 10px;
+            animation: pulse 1s infinite;
+        }
+
+        .stats-panel {
+            display: grid;
+            grid-template-rows: auto auto;
+            gap: 1.5rem;
+        }
+
+        .health-card {
+            background: linear-gradient(145deg, #1E293B, #0F172A);
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .vitals {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .vital-item {
+            flex: 1;
+            text-align: center;
+            padding: 1rem;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.05);
+        }
+
+        .face-recognition {
+            border: 2px solid var(--primary);
+            border-radius: 15px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+
+        .alert-history {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .alert-item {
+            background: rgba(255,255,255,0.05);
+            padding: 1rem;
+            margin: 0.5rem 0;
+            border-radius: 10px;
+            border-left: 4px solid;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .biometrics {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .heat-bar {
+            width: 100%;
+            height: 10px;
+            background: linear-gradient(to right, var(--safe), var(--warning), var(--danger));
+            border-radius: 5px;
+            position: relative;
+        }
+
+        .heat-indicator {
+            position: absolute;
+            height: 20px;
+            width: 2px;
+            background: white;
+            top: -5px;
+            transform: translateX(-50%);
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="dashboard">
+        <div class="main-panel">
+            <div class="thermal-view">
+                <video id="thermalCamera" autoplay muted></video>
+                <div class="overlay-alert hidden" id="feverAlert">
+                    <i class="fas fa-temperature-high"></i>
+                    إنذار! درجة حرارة مرتفعة: <span id="tempValue">40.5°C</span>
+                </div>
+                <div class="overlay-alert hidden" id="fallAlert">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    إنذار! شخص سقط على الأرض
+                </div>
+            </div>
+
+            <div class="health-card">
+                <h2><i class="fas fa-heartbeat"></i> المؤشرات الحيوية</h2>
+                <div class="vitals">
+                    <div class="vital-item">
+                        <div class="heat-bar">
+                            <div class="heat-indicator" id="tempIndicator"></div>
+                        </div>
+                        <p>درجة الحرارة: <span id="currentTemp">37.2°C</span></p>
+                    </div>
+                    <div class="vital-item">
+                        <i class="fas fa-heart" style="color: var(--danger)"></i>
+                        <p>معدل النبض: 78</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-panel">
+            <div class="health-card">
+                <h2><i class="fas fa-user-circle"></i> التعرف البيومتري</h2>
+                <div class="face-recognition">
+                    <div id="facePreview"></div>
+                    <div class="biometrics">
+                        <div>
+                            <p>رقم المقعد: <span id="seatNumber">B12</span></p>
+                            <p>الهوية: <span id="userId">02345</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="health-card alert-history">
+                <h2><i class="fas fa-bell"></i> سجل الإنذارات</h2>
+                <div class="alert-item" style="border-color: var(--danger)">
+                    <p>15:32 - ارتفاع درجة الحرارة (41.2°C)</p>
+                    <small>المقعد: A7، الهوية: 04521</small>
+                </div>
+                <div class="alert-item" style="border-color: var(--warning)">
+                    <p>15:28 - سقوط شخص في المنطقة الغربية</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // محاكاة بيانات حية
+        let currentTemp = 37;
+        const tempIndicator = document.getElementById('tempIndicator');
+
+        setInterval(() => {
+            currentTemp = 36.5 + Math.random() * 5;
+            document.getElementById('currentTemp').textContent = currentTemp.toFixed(1) + '°C';
+            tempIndicator.style.left = ((currentTemp - 35) * 20) + '%';
+
+            if(currentTemp > 40) {
+                document.getElementById('feverAlert').classList.remove('hidden');
+                // محاكاة التعرف على الوجه هنا
+            } else {
+                document.getElementById('feverAlert').classList.add('hidden');
+            }
+        }, 3000);
+
+        // محاكاة كشف السقوط
+        setInterval(() => {
+            if(Math.random() > 0.9) {
+                document.getElementById('fallAlert').classList.remove('hidden');
+                setTimeout(() => {
+                    document.getElementById('fallAlert').classList.add('hidden');
+                }, 5000);
+            }
+        }, 10000);
+    </script>
+</body>
+</html>
