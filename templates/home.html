@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ستاديوم جو | Stadium Joe</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        :root {
+            --primary-color: #00FF88;
+            --bg-dark: #0A0A0A;
+            --bg-medium: #1A1A1A;
+            --text-light: #FFFFFF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            transition: background-color 0.3s ease;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* التصميم الفاتح */
+        body.light-theme {
+            --bg-dark: #FFFFFF;
+            --bg-medium: #F5F5F5;
+            --text-light: #0A0A0A;
+            background-color: var(--bg-dark);
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--bg-medium) 0%, var(--bg-dark) 100%);
+            padding: 2rem;
+            text-align: center;
+            border-bottom: 3px solid var(--primary-color);
+            position: relative;
+        }
+
+        .logo {
+            width: 120px;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+
+        .logo:hover {
+            transform: rotate(-8deg) scale(1.1);
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: none;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 8px 15px;
+            border-radius: 25px;
+            cursor: pointer;
+        }
+
+        .hero {
+            max-width: 1200px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+            text-align: center;
+        }
+
+        .description {
+            font-size: 1.2rem;
+            color: #CCCCCC;
+            margin-bottom: 3rem;
+            line-height: 1.8;
+            animation: fadeInUp 1s ease;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 0 2rem;
+        }
+
+        .nav-button {
+            background: var(--bg-medium);
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 2px solid #2C2C2C;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 0;
+            height: 0;
+            background: rgba(0, 255, 136, 0.1);
+            border-radius: 50%;
+            transition: width 0.3s ease, height 0.3s ease;
+        }
+
+        .nav-button:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .nav-button:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-color);
+        }
+
+        .nav-button h2 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        @keyframes glow {
+            0% { box-shadow: 0 0 15px rgba(0,255,136,0.3); }
+            50% { box-shadow: 0 0 25px rgba(0,255,136,0.5); }
+            100% { box-shadow: 0 0 15px rgba(0,255,136,0.3); }
+        }
+
+        .nav-button {
+            animation: glow 3s infinite;
+        }
+
+        footer {
+            background: var(--bg-medium);
+            text-align: center;
+            padding: 2rem;
+            margin-top: 4rem;
+            border-top: 1px solid #2C2C2C;
+        }
+
+        @media (max-width: 768px) {
+            .grid-container {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-button {
+                padding: 1.5rem;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <button class="theme-toggle" onclick="toggleTheme()">تبديل الثيم</button>
+        <img src="https://aileague.tuwaiq.edu.sa/assets/images/full-logo.svg" alt="ستاديوم جو logo" class="logo animate__animated animate__bounceIn">
+        <h1 class="animate__animated animate__fadeIn">ستاديوم جو</h1>
+    </header>
+
+    <section class="hero">
+        <p class="description">
+            منصة ذكية متكاملة تجمع بين مراقبة الحشود، الرعاية الصحية، والتجارة المستدامة في الملاعب الرياضية. نقدم حلولاً مبتكرة لتحسين تجربة الجمهور مع الحفاظ على البيئة.
+        </p>
+
+        <div class="grid-container">
+            <!-- الأزرار مع تأثيرات خاصة -->
+            <div class="nav-button animate__animated animate__fadeInUp" onclick="location.href='/control'">
+                <h2>الخريطة التفاعلية 🗺️</h2>
+                <p>تتبع الحركة في الوقت الحقيقي</p>
+            </div>
+
+            <div class="nav-button animate__animated animate__fadeInUp animate__delay-1s" onclick="location.href='/nofai'">
+                <h2>مراقبة سلّة النفايات ♻️</h2>
+                <p>نظام إدارة النفايات الذكية</p>
+            </div>
+
+            <div class="nav-button animate__animated animate__fadeInUp animate__delay-2s" onclick="location.href='/enter'">
+                <h2>مراقبة الدخول 👥</h2>
+                <p>إدارة تدفق الزوار الذكية</p>
+            </div>
+
+            <div class="nav-button animate__animated animate__fadeInUp" onclick="location.href='/health'">
+                <h2>المراقبة الطبية 🚑</h2>
+                <p>نظام الاستجابة الطبية العاجلة</p>
+            </div>
+
+            <div class="nav-button animate__animated animate__fadeInUp animate__delay-1s" onclick="location.href='/sport'">
+                <h2>المتجر الإلكتروني 🛒</h2>
+                <p>منتجات مستدامة بتوصيل ذكي</p>
+            </div>
+
+            <div class="nav-button animate__animated animate__fadeInUp animate__delay-2s" onclick="location.href='about.html'">
+                <h2>حول الموقع ℹ️</h2>
+                <p>معلومات عن المشروع وفريق العمل</p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="animate__animated animate__fadeInUp">
+        <p>© 2024 ستاديوم جو. جميع الحقوق محفوظة</p>
+    </footer>
+
+    <script>
+        // تبديل الثيم
+        function toggleTheme() {
+            document.body.classList.toggle('light-theme');
+            localStorage.setItem('theme', document.body.classList.contains('light-theme') ? 'light' : 'dark');
+        }
+
+        // تحميل الثيم المحفوظ
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            if (savedTheme === 'light') document.body.classList.add('light-theme');
+        });
+
+        // تأثير التمرير للعناصر
+        window.addEventListener('scroll', () => {
+            const elements = document.querySelectorAll('.animate__fadeInUp');
+            elements.forEach(el => {
+                const elementTop = el.getBoundingClientRect().top;
+                if (elementTop < window.innerHeight - 100) {
+                    el.classList.add('animate__fadeInUp');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

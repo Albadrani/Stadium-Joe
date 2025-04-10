@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>متجر ستاديوم جو الرياضي</title>
+    <style>
+        :root {
+            --primary: #1B5E20;
+            --secondary: #2E7D32;
+            --accent: #4CAF50;
+            --text: #E8F5E9;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .product-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+            border: 1px solid var(--accent);
+            position: relative;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .product-img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-bottom: 2px solid var(--accent);
+        }
+
+        .product-info {
+            padding: 1.5rem;
+        }
+
+        .product-title {
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+            font-size: 1.2em;
+        }
+
+        .product-price {
+            color: var(--secondary);
+            font-size: 1.4em;
+            font-weight: bold;
+        }
+
+        .checkout-section {
+            max-width: 500px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid var(--accent);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 1em;
+            margin-top: 0.5rem;
+        }
+
+        button {
+            background: var(--secondary);
+            color: var(--text);
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background: var(--accent);
+            transform: scale(1.02);
+        }
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: var(--secondary-color);
+            color: var(--text-color);
+            padding: 12px 25px;
+            border-radius: 30px;
+            text-decoration: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid var(--accent-color);
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+            background: var(--accent-color);
+        }
+
+        .back-button::before {
+            content: '←';
+            font-size: 1.2em;
+        }
+        .badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: var(--secondary);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <a href="/" class="back-button">العودة للرئيسية</a>
+    <div class="container">
+        <header>
+            <h1>متجر ستاديوم جو الرياضي</h1>
+            <p>اختر من أفضل المنتجات الرياضية وتمتع بتجربة شراء فريدة</p>
+        </header>
+
+        <div class="products-grid">
+            <!-- Product 1 -->
+            <div class="product-card">
+                <div class="badge">الأكثر مبيعًا</div>
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjfP7y9gwb4XAvefHWFZPMRovo3uB3SPqJ6w&s" alt="حذاء رياضي" class="product-img">
+                <div class="product-info">
+                    <h3 class="product-title">حذاء رياضي فاخر</h3>
+                    <p class="product-price">450 ر.س</p>
+                </div>
+            </div>
+
+            <!-- Product 2 -->
+            <div class="product-card">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTBFc-7Kof-rdmE1HMI3aIDvEoCWXsy-RZVlg&s" alt="كرة قدم" class="product-img">
+                <div class="product-info">
+                    <h3 class="product-title">كرة قدم احترافية</h3>
+                    <p class="product-price">200 ر.س</p>
+                </div>
+            </div>
+
+            <!-- Product 3 -->
+            <div class="product-card">
+                <div class="badge">عرض خاص</div>
+                <img src="https://cdn.salla.sa/XoKyj/SfvKoDGz1Gi8ZDP6IA4Rm3Xk6zFhvKGg8rxI8LP7.jpg" alt="ساعة رياضية" class="product-img">
+                <div class="product-info">
+                    <h3 class="product-title">ساعة ذكية رياضية</h3>
+                    <p class="product-price">699 ر.س</p>
+                </div>
+            </div>
+
+            <!-- Product 4 -->
+            <div class="product-card">
+                <img src="https://media.6media.me/media/catalog/product/d/a/da1746-010-2.jpg" alt="حقيبة رياضية" class="product-img">
+                <div class="product-info">
+                    <h3 class="product-title">حقيبة رياضية متعددة الاستخدام</h3>
+                    <p class="product-price">150 ر.س</p>
+                </div>
+            </div>
+
+            <!-- Product 5 -->
+            <div class="product-card">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSMYFPT2rApVn7nzPfK4FcTeE9B_LbsyGqMEQ&s" alt="نظارات رياضية" class="product-img">
+                <div class="product-info">
+                    <h3 class="product-title">نظارات رياضية واقية</h3>
+                    <p class="product-price">350 ر.س</p>
+                </div>
+            </div>
+
+            <!-- Product 6 -->
+            <div class="product-card">
+                <div class="badge">جديد</div>
+                <img src="https://cdn.salla.sa/NAnWr/6nR01U3yMLafXaAQaOHC26CnkdvnSwTe0Hxe2EWe.jpg" alt="سماعات رياضية" class="product-img">
+                <div class="product-info">
+                    <h3 class="product-title">سماعات لاسلكية رياضية</h3>
+                    <p class="product-price">299 ر.س</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="checkout-section">
+            <h2 style="text-align: center; margin-bottom: 1.5rem;">إتمام عملية الشراء</h2>
+            <form id="checkoutForm">
+                <div class="form-group">
+                    <label>رقم المقعد:</label>
+                    <input type="number" id="seatNumber" required
+                           placeholder="أدخل رقم المقعد الخاص بك">
+                </div>
+                <button type="submit">تأكيد الشراء 🛒</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('checkoutForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const seatNumber = document.getElementById('seatNumber').value;
+
+            if(seatNumber) {
+                alert(`تم تأكيد طلبك بنجاح!\nرقم المقعد: ${seatNumber}\nسيتم توصيل الطلب خلال 15 دقيقة`);
+                this.reset();
+            }
+        });
+    </script>
+</body>
+</html>

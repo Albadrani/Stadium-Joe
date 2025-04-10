@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام الدخول الذكي - ستاديوم جو</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6366F1;
+            --secondary: #10B981;
+            --accent: #F59E0B;
+            --bg: #0F172A;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            color: white;
+            min-height: 100vh;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 2rem;
+            padding: 2rem;
+            height: 100vh;
+        }
+
+        .gate-view {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 0 40px rgba(99,102,241,0.2);
+        }
+
+        #liveFeed {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .face-overlay {
+            position: absolute;
+            border: 3px solid var(--secondary);
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 30px rgba(16,185,129,0.3);
+        }
+
+        .entry-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .ticket-card {
+            background: linear-gradient(145deg, #1E293B, #0F172A);
+            padding: 1.5rem;
+            border-radius: 15px;
+            animation: ticketGlow 2s infinite alternate;
+        }
+
+        @keyframes ticketGlow {
+            from { box-shadow: 0 0 10px rgba(99,102,241,0.3); }
+            to { box-shadow: 0 0 30px rgba(99,102,241,0.5); }
+        }
+
+        .user-details {
+            text-align: center;
+            margin: 1rem 0;
+        }
+
+        .user-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 3px solid var(--primary);
+            margin: 0 auto;
+        }
+
+        .entry-log {
+            background: rgba(255,255,255,0.05);
+            padding: 1rem;
+            border-radius: 15px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .log-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.03);
+            transition: transform 0.3s ease;
+        }
+
+        .log-item:hover {
+            transform: translateX(10px);
+        }
+
+        .notification-badge {
+            background: var(--accent);
+            color: var(--bg);
+            padding: 0.3rem 0.7rem;
+            border-radius: 20px;
+            font-size: 0.8em;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="dashboard">
+        <div class="gate-view">
+            <video id="liveFeed" autoplay muted></video>
+            <div class="face-overlay" id="faceBox"></div>
+        </div>
+
+        <div class="entry-panel">
+            <div class="ticket-card">
+                <div class="user-details">
+                    <img src="https://t4.ftcdn.net/jpg/03/64/21/11/360_F_364211147_1qgLVxv1Tcq0Ohz3FawUfrtONzz8nq3e.jpg" class="user-avatar" id="userAvatar">
+                    <h2 id="userName">محمد أحمد</h2>
+                    <div class="notification-badge" id="matchTime">
+                        بداية المباراة: 20:00
+                    </div>
+                </div>
+
+                <div style="margin-top: 1.5rem;">
+                    <p><i class="fas fa-ticket-alt"></i> رقم التذكرة: <span id="ticketNumber">STD-04521</span></p>
+                    <p><i class="fas fa-chair"></i> رقم المقعد: <span id="seatNumber">B12</span></p>
+                    <p><i class="fas fa-gate"></i> البوابة: <span id="gateNumber">الشمالية</span></p>
+                </div>
+            </div>
+
+            <div class="entry-log">
+                <h3><i class="fas fa-history"></i> سجل الدخول</h3>
+                <div class="log-item">
+                    <i class="fas fa-check-circle" style="color: var(--secondary)"></i>
+                    <div>
+                        <p>تم التعرف على: أحمد خالد</p>
+                        <small>10:32:45 - بوابة 2</small>
+                    </div>
+                </div>
+                <div class="log-item">
+                    <i class="fas fa-exclamation-triangle" style="color: var(--accent)"></i>
+                    <div>
+                        <p>تذكرة مكررة</p>
+                        <small>10:30:12 - بوابة 1</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // محاكاة التعرف على الوجه
+        let isRecognized = false;
+
+        setInterval(() => {
+            if(!isRecognized && Math.random() > 0.7) {
+                recognizeUser();
+                isRecognized = true;
+                setTimeout(() => isRecognized = false, 5000);
+            }
+        }, 3000);
+
+        function recognizeUser() {
+            // محاكاة بيانات المستخدم
+            const userData = {
+                name: "علي محمود",
+                avatar: "https://via.placeholder.com/100",
+                ticket: "STD-07894",
+                seat: "A23",
+                gate: "الشرقية",
+                time: "20:00"
+            };
+
+            // تحديث الواجهة
+            document.getElementById('userName').textContent = userData.name;
+            document.getElementById('userAvatar').src = userData.avatar;
+            document.getElementById('ticketNumber').textContent = userData.ticket;
+            document.getElementById('seatNumber').textContent = userData.seat;
+            document.getElementById('gateNumber').textContent = userData.gate;
+
+            // إضافة إلى سجل الدخول
+            const logEntry = document.createElement('div');
+            logEntry.className = 'log-item';
+            logEntry.innerHTML = `
+                <i class="fas fa-check-circle" style="color: var(--secondary)"></i>
+                <div>
+                    <p>تم التعرف على: ${userData.name}</p>
+                    <small>${new Date().toLocaleTimeString()} - ${userData.gate}</small>
+                </div>
+            `;
+            document.querySelector('.entry-log').prepend(logEntry);
+        }
+    </script>
+</body>
+</html>

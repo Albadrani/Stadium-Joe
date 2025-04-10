@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام مراقبة النفايات - ستاديوم جو</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        :root {
+            --primary: #2A2F4F;
+            --secondary: #4CAF50;
+            --accent: #FF5722;
+            --text: #FFFFFF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            padding: 2rem;
+            height: 100vh;
+        }
+
+        .map-container {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        #map {
+            height: 100%;
+            width: 100%;
+        }
+
+        .status-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .stats-card {
+            background: rgba(255,255,255,0.05);
+            padding: 1.5rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .legend {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            border-radius: 8px;
+        }
+
+        .status-indicator {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+        }
+
+        .trash-bin {
+            position: relative;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .trash-bin:hover {
+            transform: scale(1.2);
+        }
+
+        .progress-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .progress-ring circle {
+            fill: none;
+            stroke-width: 4;
+            stroke-linecap: round;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .alert {
+            animation: pulse 1.5s infinite;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="dashboard">
+        <div class="map-container">
+            <div id="map"></div>
+        </div>
+
+        <div class="status-panel">
+            <div class="stats-card">
+                <h2>📊 إحصائيات النفايات</h2>
+                <div class="legend">
+                    <div class="legend-item" style="background: rgba(76,175,80,0.1)">
+                        <div class="status-indicator" style="background: #4CAF50"></div>
+                        <span>فارغة (3)</span>
+                    </div>
+                    <div class="legend-item" style="background: rgba(255,152,0,0.1)">
+                        <div class="status-indicator" style="background: #FF9800"></div>
+                        <span>متوسطة (5)</span>
+                    </div>
+                    <div class="legend-item" style="background: rgba(244,67,54,0.1)">
+                        <div class="status-indicator" style="background: #F44336"></div>
+                        <span>ممتلئة (2)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats-card">
+                <h2>📍 مواقع الصناديق</h2>
+                <div id="binList" style="margin-top: 1rem;">
+                    <!-- سيتم إضافة الصناديق ديناميكيًا -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // بيانات الصناديق الافتراضية
+        const bins = [
+            { id: 1, lat: 24.7136, lng: 46.6753, level: 15 }, // فارغة
+            { id: 2, lat: 24.7140, lng: 46.6750, level: 65 }, // متوسطة
+            { id: 3, lat: 24.7132, lng: 46.6755, level: 90 }, // ممتلئة
+            // ... أضف بقية الصناديق
+        ];
+
+        // تهيئة الخريطة
+        const map = L.map('map').setView([24.7136, 46.6753], 18);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+        // إنشاء أيقونات مخصصة
+        function createBinIcon(level) {
+            const color = level < 30 ? '#4CAF50' : level < 70 ? '#FF9800' : '#F44336';
+
+            return L.divIcon({
+                className: 'trash-bin',
+                html: `
+                    <svg class="${level > 70 ? 'alert' : ''}" viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="40" fill="${color}" opacity="0.2"/>
+                        <path d="M30 70 L50 30 L70 70 Z" fill="${color}"/>
+                    </svg>
+                `,
+                iconSize: [40, 40]
+            });
+        }
+
+        // إضافة الصناديق إلى الخريطة والقائمة
+        bins.forEach(bin => {
+            const marker = L.marker([bin.lat, bin.lng], {
+                icon: createBinIcon(bin.level)
+            }).addTo(map);
+
+            // إضافة إلى القائمة
+            const binElement = document.createElement('div');
+            binElement.className = 'legend-item';
+            binElement.style.margin = '0.5rem 0';
+            binElement.innerHTML = `
+                <div class="status-indicator" style="background: ${getColor(bin.level)}"></div>
+                <span>صندوق رقم ${bin.id} - ${getStatus(bin.level)}</span>
+            `;
+            document.getElementById('binList').appendChild(binElement);
+        });
+
+        function getColor(level) {
+            return level < 30 ? '#4CAF50' : level < 70 ? '#FF9800' : '#F44336';
+        }
+
+        function getStatus(level) {
+            return level < 30 ? 'فارغة' : level < 70 ? 'متوسطة' : 'ممتلئة';
+        }
+    </script>
+</body>
+</html>
